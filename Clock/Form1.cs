@@ -1,14 +1,45 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Clock
 {
     public partial class Form1 : Form
     {
+
+
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+
         public Form1()
         {
             InitializeComponent();
+            //http://stackoverflow.com/questions/18840381/start-form-in-top-right
+            this.StartPosition = FormStartPosition.Manual;
+            foreach (var scrn in Screen.AllScreens)
+            {
+                if (scrn.Bounds.Contains(this.Location))
+                {
+                    this.Location = new Point(scrn.Bounds.Right - this.Width, scrn.Bounds.Top);
+                    return;
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -26,8 +57,7 @@ namespace Clock
             this.Close();
         }
 
-
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        private void pictureBox1_Paint(object sender, PaintEventArgs e) // draw the clock face
         {
             DateTime time = DateTime.Now;
             string theTime = time.ToLongTimeString();
@@ -47,9 +77,19 @@ namespace Clock
                           Color.DimGray);
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pictureBox1_Click(object sender, EventArgs e) // right click on the clock text to close the program
         {
             this.Close();
+        }
+
+        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+        private void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) // click and move the clock
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
     }
 }
