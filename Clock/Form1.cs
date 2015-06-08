@@ -30,13 +30,15 @@ namespace Clock
         public Form1()
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
+            this.ShowIcon = false;
             //http://stackoverflow.com/questions/18840381/start-form-in-top-right
             this.StartPosition = FormStartPosition.Manual;
             foreach (var scrn in Screen.AllScreens)
             {
                 if (scrn.Bounds.Contains(this.Location))
                 {
-                    this.Location = new Point(scrn.Bounds.Right - this.Width, scrn.Bounds.Top);
+                    this.Location = new Point(scrn.Bounds.Right - this.Width, scrn.Bounds.Top - 75);
                     return;
                 }
             }
@@ -65,14 +67,14 @@ namespace Clock
             string seconds = theTime.Remove(0, 5);
             TextRenderer.DrawText(e.Graphics,
                           hoursAndMins,
-                          new Font("Segoe UI", 75),
+                          new Font("Segoe UI Light", 75),
                           new Point(30, 30),
                           Color.White,
                           Color.DimGray);
             TextRenderer.DrawText(e.Graphics,
                           seconds,
-                          new Font("Segoe UI", 75),
-                          new Point(265, 30),
+                          new Font("Segoe UI Light", 75),
+                          new Point(245, 30),
                           Color.RoyalBlue,
                           Color.DimGray);
         }
