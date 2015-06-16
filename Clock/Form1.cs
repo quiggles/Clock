@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Media;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Clock
@@ -32,13 +35,42 @@ namespace Clock
             InitializeComponent();
             this.ShowInTaskbar = false;
             this.ShowIcon = false;
+            if (Properties.Settings.Default.rememberScreenPosition != null)
+            {
+                if (Properties.Settings.Default.rememberScreenPosition)
+                {
+                    this.Location = Properties.Settings.Default.screenPosition;
+                }
+                else
+                {
+                    positionScreen();
+                }
+
+            }
+            else
+            {
+                if (Properties.Settings.Default.screenPosition != null)
+                {
+                    this.Location = Properties.Settings.Default.screenPosition;
+                }
+                else
+                {
+                    positionScreen();
+                }
+            }
+
+
+        }
+
+        private void positionScreen()
+        {
             //http://stackoverflow.com/questions/18840381/start-form-in-top-right
             this.StartPosition = FormStartPosition.Manual;
             foreach (var scrn in Screen.AllScreens)
             {
                 if (scrn.Bounds.Contains(this.Location))
                 {
-                    this.Location = new Point(scrn.Bounds.Right - this.Width, scrn.Bounds.Top - 75);
+                    this.Location = new Point(scrn.Bounds.Right - this.Width, scrn.Bounds.Top);
                     return;
                 }
             }
@@ -56,12 +88,19 @@ namespace Clock
 
         private void Form1_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Form 1 click");
             this.Close();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e) // draw the clock face
         {
             DateTime time = DateTime.Now;
+
+            if (((time.Minute ==0) && (time.Second == 0)) && Properties.Settings.Default.beepOnHour)
+            {
+                Utilities.playSound(@Properties.Settings.Default.hourSound);
+            }
+
             string theTime = time.ToLongTimeString();
             string hoursAndMins = theTime.Remove(5, 3);
             string seconds = theTime.Remove(0, 5);
@@ -74,24 +113,51 @@ namespace Clock
             TextRenderer.DrawText(e.Graphics,
                           seconds,
                           new Font("Segoe UI Light", 75),
-                          new Point(245, 30),
+                          new Point(260, 30),
                           Color.RoyalBlue,
                           Color.DimGray);
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e) // right click on the clock text to close the program
+
+        private void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) // click and move the clock
+        {
+            // http://stackoverflow.com/questions/9823883/adding-a-right-click-menu-to-an-item
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
+                    ReleaseCapture();
+                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                    break;
+                case MouseButtons.Right:
+                    rightClickMenuStrip.Show(this, new Point(e.X, e.Y));//places the menu at the pointer position
+                    break;
+            }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Stuff and that...", "About");
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show("Stuff and that...", "Options");
+            Options optionsForm = new Options();
+            optionsForm.ShowDialog();
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        // http://stackoverflow.com/questions/1592876/make-a-borderless-form-movable
-        private void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) // click and move the clock
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            //MessageBox.Show(e.CloseReason.ToString());
+            Properties.Settings.Default.screenPosition = this.Location;
+            Properties.Settings.Default.Save(); // saved at C:\Users\USERNAME\AppData\Local\Clock
         }
+
     }
 }
