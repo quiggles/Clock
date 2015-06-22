@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Clock
@@ -22,7 +14,19 @@ namespace Clock
         {
             checkBoxRmbrScreenPos.Checked = Properties.Settings.Default.rememberScreenPosition;
             checkBoxSoundOnHour.Checked = Properties.Settings.Default.beepOnHour;
-            textBoxHourSoundName.Text = Properties.Settings.Default.hourSound;            
+            textBoxHourSoundName.Text = Properties.Settings.Default.hourSound;
+            checkBoxInt05.Checked = Properties.Settings.Default.int05;
+            checkBoxInt10.Checked = Properties.Settings.Default.int10;
+            checkBoxInt15.Checked = Properties.Settings.Default.int15;
+            checkBoxInt20.Checked = Properties.Settings.Default.int20;
+            checkBoxInt25.Checked = Properties.Settings.Default.int25;
+            checkBoxInt30.Checked = Properties.Settings.Default.int30;
+            checkBoxInt35.Checked = Properties.Settings.Default.int35;
+            checkBoxInt40.Checked = Properties.Settings.Default.int40;
+            checkBoxInt45.Checked = Properties.Settings.Default.int45;
+            checkBoxInt50.Checked = Properties.Settings.Default.int50;
+            checkBoxInt55.Checked = Properties.Settings.Default.int55;
+            textBoxIntervalSoundName.Text = Properties.Settings.Default.intervalSound;
         }
 
         private void Options_FormClosing(object sender, FormClosingEventArgs e)
@@ -30,6 +34,18 @@ namespace Clock
             Properties.Settings.Default.rememberScreenPosition = checkBoxRmbrScreenPos.Checked;
             Properties.Settings.Default.beepOnHour = checkBoxSoundOnHour.Checked;
             Properties.Settings.Default.hourSound = textBoxHourSoundName.Text;
+            Properties.Settings.Default.int05 = checkBoxInt05.Checked;
+            Properties.Settings.Default.int10 = checkBoxInt10.Checked;
+            Properties.Settings.Default.int15 = checkBoxInt15.Checked;
+            Properties.Settings.Default.int20 = checkBoxInt20.Checked;
+            Properties.Settings.Default.int25 = checkBoxInt25.Checked;
+            Properties.Settings.Default.int30 = checkBoxInt30.Checked;
+            Properties.Settings.Default.int35 = checkBoxInt35.Checked;
+            Properties.Settings.Default.int40 = checkBoxInt40.Checked;
+            Properties.Settings.Default.int45 = checkBoxInt45.Checked;
+            Properties.Settings.Default.int50 = checkBoxInt50.Checked;
+            Properties.Settings.Default.int55 = checkBoxInt55.Checked;
+            Properties.Settings.Default.intervalSound=textBoxIntervalSoundName.Text;
             Properties.Settings.Default.Save(); // saved at C:\Users\USERNAME\AppData\Local\Clock
         }
 
@@ -47,8 +63,8 @@ namespace Clock
                 textBoxHourSoundName.Text = dialog.FileName;
                 if (string.Compare( textBoxHourSoundName.Text, Properties.Settings.Default.hourSound)!=0)
                 {
-                    buttonRevert.Visible = true;
-                    buttonRevert.Enabled = true;
+                    buttonHourSoundRevert.Visible = true;
+                    buttonHourSoundRevert.Enabled = true;
                 }
 
                 Utilities.playSound(dialog.FileName);
@@ -56,11 +72,42 @@ namespace Clock
             }
         }
 
-        private void buttonRevert_Click(object sender, EventArgs e)
+        private void buttonHourSoundRevert_Click(object sender, EventArgs e)
         {
             textBoxHourSoundName.Text = Properties.Settings.Default.hourSound;
-            buttonRevert.Visible = false;
-            buttonRevert.Enabled = false;
+            buttonHourSoundRevert.Visible = false;
+            buttonHourSoundRevert.Enabled = false;
+        }
+
+        private void buttonIntervalSoundRevert_Click(object sender, EventArgs e)
+        {
+            textBoxIntervalSoundName.Text = Properties.Settings.Default.intervalSound;
+            buttonIntervalSoundRevert.Visible = false;
+            buttonIntervalSoundRevert.Enabled = false;
+        }
+
+        private void buttonIntervalSoundName_Click(object sender, EventArgs e)
+        {
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "WAV Files (*.wav)|*.wav|MP3 Files (*.mp3)|*.mp3|WMA Files (*.wma)|*.wma";
+            dialog.Multiselect = false;
+            string input = Properties.Settings.Default.intervalSound;
+            input = input.Substring(0, input.LastIndexOf(@"\") + 1);
+            dialog.InitialDirectory = @input;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                textBoxIntervalSoundName.Text = dialog.FileName;
+                if (string.Compare(textBoxIntervalSoundName.Text, Properties.Settings.Default.intervalSound) != 0)
+                {
+                    buttonIntervalSoundRevert.Visible = true;
+                    buttonIntervalSoundRevert.Enabled = true;
+                }
+
+                Utilities.playSound(dialog.FileName);
+
+            }
         }
     }
 }

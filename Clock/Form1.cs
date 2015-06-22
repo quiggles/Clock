@@ -1,9 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
-using System.Media;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Clock
@@ -35,31 +33,15 @@ namespace Clock
             InitializeComponent();
             this.ShowInTaskbar = false;
             this.ShowIcon = false;
-            if (Properties.Settings.Default.rememberScreenPosition != null)
+            if (Properties.Settings.Default.rememberScreenPosition)
             {
-                if (Properties.Settings.Default.rememberScreenPosition)
-                {
-                    this.Location = Properties.Settings.Default.screenPosition;
-                }
-                else
-                {
-                    positionScreen();
-                }
-
+                this.Location = Properties.Settings.Default.screenPosition;
             }
             else
             {
-                if (Properties.Settings.Default.screenPosition != null)
-                {
-                    this.Location = Properties.Settings.Default.screenPosition;
-                }
-                else
-                {
-                    positionScreen();
-                }
+                //positionScreen();
+                this.Location = new Point(0, 0);
             }
-
-
         }
 
         private void positionScreen()
@@ -96,9 +78,30 @@ namespace Clock
         {
             DateTime time = DateTime.Now;
 
-            if (((time.Minute ==0) && (time.Second == 0)) && Properties.Settings.Default.beepOnHour)
+            if (time.Second == 0) // only check this on 0 seconds
             {
-                Utilities.playSound(@Properties.Settings.Default.hourSound);
+                if ((time.Minute == 0) && Properties.Settings.Default.beepOnHour)
+                {
+                    Utilities.playSound(@Properties.Settings.Default.hourSound);
+                }
+                else if (time.Minute % 5 == 0)
+                {
+                    foreach (SettingsProperty currentProperty in Properties.Settings.Default.Properties)
+                    {
+                        int intValue = time.Minute;
+                        string intName = "00";
+                        string intFieldName = "";
+
+                        intName = intValue.ToString(intName); // Display the numbers using the ToString method.
+                        intFieldName = "int" + intName;
+
+                        if (currentProperty.Name == intFieldName)
+                        {
+                            if ((bool) Properties.Settings.Default[currentProperty.Name]) Utilities.playSound(@Properties.Settings.Default.intervalSound);
+                            break;  // not sure this works right!!
+                        }
+                    }
+                }
             }
 
             string theTime = time.ToLongTimeString();
@@ -137,7 +140,8 @@ namespace Clock
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Stuff and that...", "About");
+            About aboutForm = new About();
+            aboutForm.ShowDialog();
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
