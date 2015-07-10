@@ -214,5 +214,41 @@ namespace Clock.Properties {
                 this["int55"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("01/01/2000 21:00:00")]
+        public global::System.DateTime quietStart {
+            get {
+                return ((global::System.DateTime)(this["quietStart"]));
+            }
+            set {
+                this["quietStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("07/08/2015 09:00:00")]
+        public global::System.DateTime quietEnd {
+            get {
+                return ((global::System.DateTime)(this["quietEnd"]));
+            }
+            set {
+                this["quietEnd"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool quietTime {
+            get {
+                return ((bool)(this["quietTime"]));
+            }
+            set {
+                this["quietTime"] = value;
+            }
+        }
     }
 }

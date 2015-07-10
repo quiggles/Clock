@@ -64,6 +64,10 @@
             this.buttonIntervalSoundRevert = new System.Windows.Forms.Button();
             this.buttonIntervalSoundName = new System.Windows.Forms.Button();
             this.textBoxIntervalSoundName = new System.Windows.Forms.TextBox();
+            this.labelQuietHours = new System.Windows.Forms.Label();
+            this.checkBoxQuietHours = new System.Windows.Forms.CheckBox();
+            this.timeStart = new System.Windows.Forms.DateTimePicker();
+            this.timeEnd = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // checkBoxRmbrScreenPos
@@ -413,11 +417,59 @@
             this.textBoxIntervalSoundName.Size = new System.Drawing.Size(223, 22);
             this.textBoxIntervalSoundName.TabIndex = 32;
             // 
+            // labelQuietHours
+            // 
+            this.labelQuietHours.AutoSize = true;
+            this.labelQuietHours.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelQuietHours.Location = new System.Drawing.Point(232, 74);
+            this.labelQuietHours.Name = "labelQuietHours";
+            this.labelQuietHours.Size = new System.Drawing.Size(84, 17);
+            this.labelQuietHours.TabIndex = 35;
+            this.labelQuietHours.Text = "Quiet Hours?";
+            // 
+            // checkBoxQuietHours
+            // 
+            this.checkBoxQuietHours.AutoSize = true;
+            this.checkBoxQuietHours.Location = new System.Drawing.Point(316, 77);
+            this.checkBoxQuietHours.Name = "checkBoxQuietHours";
+            this.checkBoxQuietHours.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxQuietHours.TabIndex = 36;
+            this.checkBoxQuietHours.UseVisualStyleBackColor = true;
+            this.checkBoxQuietHours.CheckedChanged += new System.EventHandler(this.checkBoxQuietHours_CheckedChanged);
+            // 
+            // timeStart
+            // 
+            this.timeStart.CustomFormat = "HH:mm";
+            this.timeStart.Enabled = false;
+            this.timeStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.timeStart.Location = new System.Drawing.Point(353, 73);
+            this.timeStart.Name = "timeStart";
+            this.timeStart.ShowUpDown = true;
+            this.timeStart.Size = new System.Drawing.Size(68, 22);
+            this.timeStart.TabIndex = 37;
+            this.timeStart.Value = new System.DateTime(2015, 7, 8, 21, 0, 0, 0);
+            // 
+            // timeEnd
+            // 
+            this.timeEnd.CustomFormat = "HH:mm";
+            this.timeEnd.Enabled = false;
+            this.timeEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.timeEnd.Location = new System.Drawing.Point(436, 73);
+            this.timeEnd.Name = "timeEnd";
+            this.timeEnd.ShowUpDown = true;
+            this.timeEnd.Size = new System.Drawing.Size(68, 22);
+            this.timeEnd.TabIndex = 38;
+            this.timeEnd.Value = new System.DateTime(2015, 7, 9, 8, 0, 0, 0);
+            // 
             // Options
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(522, 261);
+            this.Controls.Add(this.timeEnd);
+            this.Controls.Add(this.timeStart);
+            this.Controls.Add(this.checkBoxQuietHours);
+            this.Controls.Add(this.labelQuietHours);
             this.Controls.Add(this.buttonIntervalSoundRevert);
             this.Controls.Add(this.buttonIntervalSoundName);
             this.Controls.Add(this.textBoxIntervalSoundName);
@@ -505,5 +557,9 @@
         private System.Windows.Forms.Button buttonIntervalSoundRevert;
         private System.Windows.Forms.Button buttonIntervalSoundName;
         private System.Windows.Forms.TextBox textBoxIntervalSoundName;
+        private System.Windows.Forms.Label labelQuietHours;
+        private System.Windows.Forms.CheckBox checkBoxQuietHours;
+        private System.Windows.Forms.DateTimePicker timeStart;
+        private System.Windows.Forms.DateTimePicker timeEnd;
     }
 }

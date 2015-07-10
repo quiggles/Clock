@@ -50,5 +50,14 @@
     <Setting Name="int55" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="quietStart" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">01/01/2000 21:00:00</Value>
+    </Setting>
+    <Setting Name="quietEnd" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">07/08/2015 09:00:00</Value>
+    </Setting>
+    <Setting Name="quietTime" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

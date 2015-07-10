@@ -10,7 +10,7 @@ namespace Clock
             InitializeComponent();
         }
 
-        private void Options_Load(object sender, EventArgs e)
+        void Options_Load(object sender, EventArgs e)
         {
             checkBoxRmbrScreenPos.Checked = Properties.Settings.Default.rememberScreenPosition;
             checkBoxSoundOnHour.Checked = Properties.Settings.Default.beepOnHour;
@@ -27,9 +27,12 @@ namespace Clock
             checkBoxInt50.Checked = Properties.Settings.Default.int50;
             checkBoxInt55.Checked = Properties.Settings.Default.int55;
             textBoxIntervalSoundName.Text = Properties.Settings.Default.intervalSound;
+            checkBoxQuietHours.Checked = Properties.Settings.Default.quietTime;
+            timeStart.Value = Properties.Settings.Default.quietStart;
+            timeEnd.Value = Properties.Settings.Default.quietEnd;
         }
 
-        private void Options_FormClosing(object sender, FormClosingEventArgs e)
+        void Options_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.rememberScreenPosition = checkBoxRmbrScreenPos.Checked;
             Properties.Settings.Default.beepOnHour = checkBoxSoundOnHour.Checked;
@@ -46,10 +49,14 @@ namespace Clock
             Properties.Settings.Default.int50 = checkBoxInt50.Checked;
             Properties.Settings.Default.int55 = checkBoxInt55.Checked;
             Properties.Settings.Default.intervalSound=textBoxIntervalSoundName.Text;
+            Properties.Settings.Default.quietTime = checkBoxQuietHours.Checked;
+            Properties.Settings.Default.quietStart = timeStart.Value;
+            Properties.Settings.Default.quietEnd = timeEnd.Value;
             Properties.Settings.Default.Save(); // saved at C:\Users\USERNAME\AppData\Local\Clock
+            Utilities.itsQuietTime = Utilities.isQuietTime(DateTime.Now);
         }
 
-        private void buttonHourSoundName_Click(object sender, EventArgs e)
+        void buttonHourSoundName_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "WAV Files (*.wav)|*.wav|MP3 Files (*.mp3)|*.mp3|WMA Files (*.wma)|*.wma";
@@ -72,21 +79,21 @@ namespace Clock
             }
         }
 
-        private void buttonHourSoundRevert_Click(object sender, EventArgs e)
+        void buttonHourSoundRevert_Click(object sender, EventArgs e)
         {
             textBoxHourSoundName.Text = Properties.Settings.Default.hourSound;
             buttonHourSoundRevert.Visible = false;
             buttonHourSoundRevert.Enabled = false;
         }
 
-        private void buttonIntervalSoundRevert_Click(object sender, EventArgs e)
+        void buttonIntervalSoundRevert_Click(object sender, EventArgs e)
         {
             textBoxIntervalSoundName.Text = Properties.Settings.Default.intervalSound;
             buttonIntervalSoundRevert.Visible = false;
             buttonIntervalSoundRevert.Enabled = false;
         }
 
-        private void buttonIntervalSoundName_Click(object sender, EventArgs e)
+        void buttonIntervalSoundName_Click(object sender, EventArgs e)
         {
 
             OpenFileDialog dialog = new OpenFileDialog();
@@ -104,9 +111,21 @@ namespace Clock
                     buttonIntervalSoundRevert.Visible = true;
                     buttonIntervalSoundRevert.Enabled = true;
                 }
-
                 Utilities.playSound(dialog.FileName);
+            }
+        }
 
+        void checkBoxQuietHours_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxQuietHours.Checked)
+            {
+                timeStart.Enabled = true;
+                timeEnd.Enabled = true;
+            }
+            else
+            {
+                timeStart.Enabled = false;
+                timeEnd.Enabled = false;
             }
         }
     }

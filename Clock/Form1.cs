@@ -8,8 +8,6 @@ namespace Clock
 {
     public partial class Form1 : Form
     {
-
-
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
@@ -18,7 +16,7 @@ namespace Clock
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -26,7 +24,6 @@ namespace Clock
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
         }
-
 
         public Form1()
         {
@@ -42,9 +39,11 @@ namespace Clock
                 //positionScreen();
                 this.Location = new Point(0, 0);
             }
+            Utilities.itsQuietTime = Utilities.isQuietTime(DateTime.Now);
+            
         }
 
-        private void positionScreen()
+        void positionScreen()
         {
             //http://stackoverflow.com/questions/18840381/start-form-in-top-right
             this.StartPosition = FormStartPosition.Manual;
@@ -58,71 +57,97 @@ namespace Clock
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        void Form1_Load(object sender, EventArgs e)
         {
             timer1.Start();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        void timer1_Tick(object sender, EventArgs e)
         {
             pictureBox1.Refresh();
         }
 
-        private void Form1_Click(object sender, EventArgs e)
+        void Form1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form 1 click");
+            MessageBox.Show("Form 1 click"); // should never see this!
             this.Close();
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e) // draw the clock face
+        void pictureBox1_Paint(object sender, PaintEventArgs e) // draw the clock face
         {
             DateTime time = DateTime.Now;
-
-            if (time.Second == 0) // only check this on 0 seconds
-            {
-                if ((time.Minute == 0) && Properties.Settings.Default.beepOnHour)
-                {
-                    Utilities.playSound(@Properties.Settings.Default.hourSound);
-                }
-                else if (time.Minute % 5 == 0)
-                {
-                    foreach (SettingsProperty currentProperty in Properties.Settings.Default.Properties)
-                    {
-                        int intValue = time.Minute;
-                        string intName = "00";
-                        string intFieldName = "";
-
-                        intName = intValue.ToString(intName); // Display the numbers using the ToString method.
-                        intFieldName = "int" + intName;
-
-                        if (currentProperty.Name == intFieldName)
-                        {
-                            if ((bool) Properties.Settings.Default[currentProperty.Name]) Utilities.playSound(@Properties.Settings.Default.intervalSound);
-                            break;  // not sure this works right!!
-                        }
-                    }
-                }
-            }
-
             string theTime = time.ToLongTimeString();
             string hoursAndMins = theTime.Remove(5, 3);
             string seconds = theTime.Remove(0, 5);
+
             TextRenderer.DrawText(e.Graphics,
-                          hoursAndMins,
-                          new Font("Segoe UI Light", 75),
-                          new Point(30, 30),
-                          Color.White,
-                          Color.DimGray);
+                            hoursAndMins,
+                            new Font("Segoe UI Light", 75),
+                            new Point(30, -36),
+                            Color.White,
+                            Color.DimGray);
+
             TextRenderer.DrawText(e.Graphics,
                           seconds,
                           new Font("Segoe UI Light", 75),
-                          new Point(260, 30),
+                          new Point(260, -36),
                           Color.RoyalBlue,
                           Color.DimGray);
+            if (Utilities.itsQuietTime)
+            {
+                TextRenderer.DrawText(e.Graphics,
+                                "Quiet Time",
+                                new Font("Segoe UI Light", 8),
+                                new Point(50, 70),
+                                Color.Red,
+                                Color.DimGray);
+            }
+
+            if (time.Second == 0) 
+            {
+                if (Utilities.isQuietTime(time))  // only want to check the quiet time once a minute
+                {
+                    TextRenderer.DrawText(e.Graphics,
+                                    "Quiet Time",
+                                    new Font("Segoe UI Light", 8),
+                                    new Point(50, 70),
+                                    Color.Red,
+                                    Color.DimGray);
+                }
+                else
+                {
+                    timeForSound(time);
+                }
+            }
         }
 
+        void timeForSound(DateTime timeSound)
+        {
+            if ((timeSound.Minute == 0) && Properties.Settings.Default.beepOnHour)
+            {
+                Utilities.playSound(@Properties.Settings.Default.hourSound);
+            }
+            else if (timeSound.Minute % 5 == 0)
+            {
+                foreach (SettingsProperty currentProperty in Properties.Settings.Default.Properties)
+                {
+                    int intValue = timeSound.Minute;
+                    string intName = "00";
+                    string intFieldName = "";
 
-        private void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) // click and move the clock
+                    intName = intValue.ToString(intName); // Display the numbers using the ToString method.
+                    intFieldName = "int" + intName;
+
+                    if (currentProperty.Name == intFieldName)
+                    {
+                        if ((bool)Properties.Settings.Default[currentProperty.Name]) Utilities.playSound(@Properties.Settings.Default.intervalSound);
+                        break;  // break out of foreach
+                    }
+                }
+            }
+        }
+
+        void pictureBox1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) // click and move the clock
         {
             // http://stackoverflow.com/questions/9823883/adding-a-right-click-menu-to-an-item
             switch (e.Button)
@@ -138,25 +163,25 @@ namespace Clock
             }
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About aboutForm = new About();
             aboutForm.ShowDialog();
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("Stuff and that...", "Options");
             Options optionsForm = new Options();
             optionsForm.ShowDialog();
         }
 
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             //MessageBox.Show(e.CloseReason.ToString());
             Properties.Settings.Default.screenPosition = this.Location;
