@@ -16,5 +16,15 @@ namespace Clock
         {
             InitializeComponent();
         }
+
+        private void linkLabelWeb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.quiggles.net");
+        }
+
+        private void linkLabelEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("mailto:gary@quiggles.net?subject=Clock 24");
+        }
     }
 }

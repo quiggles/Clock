@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Clock
 {
-    public partial class Form1 : Form
+    public partial class Clock24 : Form
     {
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
@@ -25,7 +26,7 @@ namespace Clock
             }
         }
 
-        public Form1()
+        public Clock24()
         {
             InitializeComponent();
             this.ShowInTaskbar = false;
@@ -79,11 +80,23 @@ namespace Clock
             string theTime = time.ToLongTimeString();
             string hoursAndMins = theTime.Remove(5, 3);
             string seconds = theTime.Remove(0, 5);
+            int i1 = hoursAndMins.Count(x => x == '1'); // count the number of times the character 1 shows up
+
+            //Console.WriteLine($"{TextRenderer.MeasureText("11:11", new Font("Segoe UI Light", 75))}");
+            //Console.WriteLine($"{TextRenderer.MeasureText("11:12", new Font("Segoe UI Light", 75))}");
+            //Console.WriteLine($"{TextRenderer.MeasureText("11:22", new Font("Segoe UI Light", 75))}");
+            //Console.WriteLine($"{TextRenderer.MeasureText("12:00", new Font("Segoe UI Light", 75))}");
+            //Console.WriteLine($"{TextRenderer.MeasureText("23:00", new Font("Segoe UI Light", 75))}");
+            //{ Width = 223, Height = 133}
+            //{ Width = 239, Height = 133}
+            //{ Width = 255, Height = 133}
+            //{ Width = 271, Height = 133}
+            //{ Width = 287, Height = 133}    16 difference
 
             TextRenderer.DrawText(e.Graphics,
                             hoursAndMins,
                             new Font("Segoe UI Light", 75),
-                            new Point(30, -36),
+                            new Point(30+(i1*16), -36),
                             Color.White,
                             Color.DimGray);
 

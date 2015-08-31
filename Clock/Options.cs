@@ -68,7 +68,7 @@ namespace Clock
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxHourSoundName.Text = dialog.FileName;
-                if (string.Compare( textBoxHourSoundName.Text, Properties.Settings.Default.hourSound)!=0)
+                if (string.Compare(textBoxHourSoundName.Text, Properties.Settings.Default.hourSound, StringComparison.Ordinal) != 0)
                 {
                     buttonHourSoundRevert.Visible = true;
                     buttonHourSoundRevert.Enabled = true;
@@ -100,13 +100,13 @@ namespace Clock
             dialog.Filter = "WAV Files (*.wav)|*.wav|MP3 Files (*.mp3)|*.mp3|WMA Files (*.wma)|*.wma";
             dialog.Multiselect = false;
             string input = Properties.Settings.Default.intervalSound;
-            input = input.Substring(0, input.LastIndexOf(@"\") + 1);
+            input = input.Substring(0, input.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
             dialog.InitialDirectory = @input;
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 textBoxIntervalSoundName.Text = dialog.FileName;
-                if (string.Compare(textBoxIntervalSoundName.Text, Properties.Settings.Default.intervalSound) != 0)
+                if (string.Compare(textBoxIntervalSoundName.Text, Properties.Settings.Default.intervalSound, StringComparison.Ordinal) != 0)
                 {
                     buttonIntervalSoundRevert.Visible = true;
                     buttonIntervalSoundRevert.Enabled = true;
